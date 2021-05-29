@@ -1,0 +1,15 @@
+SELECT
+	e.EmployeeId, 
+	e.FirstName, 
+	e.Title, 
+	COUNT(DISTINCT c.customerid) AS 'no_of_customers',
+	 SUM(i.Total) / COUNT(DISTINCT c.customerid) AS 'avg_revenue',
+	SUM(i.Total) AS 'total_revenue'
+FROM employees e 
+LEFT JOIN customers c
+	ON c.SupportRepId = e.EmployeeId
+LEFT JOIN invoices i
+	ON i.CustomerId = c.CustomerId
+GROUP BY e.EmployeeId
+ORDER BY no_of_customers DESC;
+
