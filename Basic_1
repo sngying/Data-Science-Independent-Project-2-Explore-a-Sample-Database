@@ -1,0 +1,6 @@
+SELECT t.TrackId, t.name, t.AlbumId, t.MediaTypeId, T.GenreId, t.Composer, COUNT(pt.PlaylistId) AS 'playlist_count'
+FROM tracks t
+LEFT JOIN playlist_track pt
+ON t.TrackId = pt.TrackId
+GROUP BY t.TrackId
+ORDER  BY playlist_count DESC;
