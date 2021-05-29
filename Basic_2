@@ -1,1 +1,10 @@
-
+SELECT 
+	t.TrackId, t.name, 
+	COUNT(i.Trackid) AS 'count', 
+	t.UnitPrice, 
+	COUNT(i.Trackid)*t.UnitPrice AS 'Revenue'
+FROM tracks t
+LEFT JOIN invoice_items i
+ON t.TrackId = i.TrackId
+GROUP BY t.TrackId
+ORDER BY Revenue DESC;
