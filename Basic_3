@@ -1,0 +1,12 @@
+SELECT 
+	c.Country,
+	COUNT(c.customerid) AS 'number',
+	SUM(i.total) AS 'revenue',
+	ROUND(100 * SUM(i.total)  / (
+	SELECT SUM(total)
+	FROM invoices),2)
+FROM customers c
+LEFT JOIN invoices i 
+ON c.CustomerId = i.CustomerId
+GROUP BY Country 
+ORDER BY revenue DESC;
