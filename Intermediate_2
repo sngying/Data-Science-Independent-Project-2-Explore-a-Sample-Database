@@ -1,0 +1,41 @@
+-- SNG
+WITH playlistXtracks AS (
+	SELECT 
+		p.PlaylistId, 
+		p.Name AS 'Playlist_Name', 
+		t.TrackId, 
+		t.Name AS 'Track_Name'
+	FROM tracks t
+	LEFT JOIN playlist_track pt
+	ON t.TrackId = pt.TrackId
+	JOIN playlists p
+	ON p.PlaylistId = pt.PlaylistId
+)
+SELECT 
+		x.TrackId, 
+		x.Track_Name, 
+		COUNT(DISTINCT x.PlaylistId) AS 'no_of_appearance_on_playlist', 
+		i.Quantity,
+		i.UnitPrice,
+		SUM(i.Quantity * i.UnitPrice) AS 'revenue'
+FROM playlistXtracks x
+LEFT JOIN invoice_items i
+ON x.TrackId = i.TrackId
+GROUP BY x.TrackId
+ORDER BY revenue DESC;
+
+
+
+-- OTHER PEOPLE
+WITH playlist_numbers AS (
+	SELECT TrackId, 
+	COUNT(*) AS TrackCount FROM playlist_track
+GROUP BY TrackId
+)
+SELECT 
+playlist_numbers.TrackCount AS "PlaylistAppearances", 
+AVG(invoice_items.UnitPrice) AS "Sales" FROM invoice_items
+INNER JOIN playlist_numbers 
+ON invoice_items.TrackId = playlist_numbers.TrackId
+GROUP BY playlist_numbers.TrackCount
+ORDER BY Sales DESC;
