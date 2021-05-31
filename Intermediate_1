@@ -1,0 +1,23 @@
+WITH all_album AS (
+	SELECT 
+		a.AlbumId,
+		a.Title,
+		t.TrackId,
+		t.Milliseconds
+	FROM albums a 
+	JOIN tracks t
+	ON a.AlbumId = t.AlbumId
+	GROUP BY t.TrackId
+	)
+SELECT
+	a.AlbumId,
+	a.Title,
+	SUM(a.Milliseconds) AS 'length',
+	i.UnitPrice,
+	SUM(i.Quantity),
+	1.0 * (i.UnitPrice * SUM(i.Quantity)) AS 'revenue'
+FROM all_album a 
+JOIN invoice_items i
+ON a.TrackId = i.TrackId
+GROUP BY a.AlbumId
+ORDER BY revenue DESC;
