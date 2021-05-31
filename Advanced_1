@@ -1,0 +1,18 @@
+WITH table_1 AS (
+SELECT 
+	STRFTIME('%Y',InvoiceDate) AS 'year', 
+	SUM(Total) AS 'Revenue'
+FROM invoices
+GROUP BY year
+)
+SELECT 	
+	year,
+	revenue, 
+	LAG(revenue,1,0) OVER (
+	ORDER BY year) AS 'past_year',
+	revenue - LAG(revenue,1,revenue) OVER (
+	ORDER BY year) AS 'revenue_change',
+	ROUND(100* ((revenue - LAG(revenue,1,revenue) OVER (
+	ORDER BY year))  / LAG(revenue,1,0) OVER (
+	ORDER BY year)),2) AS 'percentage_change'
+FROM table_1;
